@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vulnerable App</title>
+</head>
+<body>
+    <h1>Welcome to Vulnerable App</h1>
+
+    <!-- VULNERABILITY: Reflected XSS in search parameter -->
+    <form action="/search" method="GET">
+        <input type="text" name="q" placeholder="Search...">
+        <input type="submit" value="Search">
+    </form>
+
+    {% if search_query %}
+        <h2>Search results for: {{ search_query }}</h2>
+        <!-- VULNERABILITY: No output encoding -->
+        <p>You searched for: {{ search_query }}</p>
+    {% endif %}
+
+    <!-- VULNERABILITY: Stored XSS potential in comments -->
+    <div id="comments">
+        <h3>Comments</h3>
+        <form action="/comment" method="POST">
+            <textarea name="comment" rows="4" cols="50"></textarea><br>
+            <input type="submit" value="Submit Comment">
+        </form>
+    </div>
+
+    <!-- VULNERABILITY: JavaScript with potentially unsafe innerHTML -->
+    <script>
+        function showMessage() {
+            var userInput = "{{ user_message }}";
+            document.getElementById('message').innerHTML = userInput;
+        }
+    </script>
+</body>
+</html>
